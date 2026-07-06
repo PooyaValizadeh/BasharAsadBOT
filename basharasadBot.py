@@ -1,8 +1,8 @@
 
+from balethon import Client
+
 bot = Client("TOKEN")
 
-
-from balethon import Client
 from balethon.conditions import reply, regex, new_chat_members, group,private, equals
 from balethon.conditions import private, successful_payment
 from balethon.objects import LabeledPrice
