@@ -1,39 +1,56 @@
+# BasharAsadBOT
 
-# BasharAsadBot
+A Telegram-style game bot built with **Balethon**. The project keeps its bot source, runtime data, and setup documentation in separate locations.
 
-A belethon APi Bot for gaming and war!!!
+## Repository layout
 
-
-## Usage/Examples
-
-```python
-just set the TOKEN and DADY_ID
+```text
+BasharAsadBOT/
+├── src/
+│   └── basharasad_bot.py   # Main bot application
+├── data/                   # Runtime database and JSON inventories
+├── .gitignore
+├── requirements.txt
+├── LICENSE
+└── README.md
 ```
 
+## Requirements
 
-## Used By
+- Python
+- Balethon
 
-This project is used by the following companies:
+Install dependencies:
 
-- PooyaValizadeh
+```bash
+python -m pip install -r requirements.txt
+```
 
+## Configuration
 
-## Authors
+Before running the bot, open `src/basharasad_bot.py` and replace the `TOKEN` placeholder in `Client("TOKEN")` with your bot token.
 
-- [@PooyaValizadeh](https://www.github.com/PooyaValizadeh)
+If payment features are used, configure `PROVIDER_TOKEN` as required by your payment provider. Do not commit real bot or provider tokens to GitHub.
 
+## Run
+
+Run the command from the repository root so the project uses the expected `data/` directory:
+
+```bash
+python src/basharasad_bot.py
+```
+
+## Runtime data
+
+The bot creates and stores its SQLite database and JSON inventory files in `data/`:
+
+- `bashar.db`
+- `miner_inventory.json`
+- `missile_inventory.json`
+- `defense_inventory.json`
+
+These are runtime files and are intentionally excluded from Git. Back them up separately if you need to preserve bot progress.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
-
-
-## Support
-
-For support, pay https://www.coffeebede.com/PooyaValizadeh or join our Slack channel.
-
-
-## Feedback
-
-If you have any feedback, please reach out to us at valizadehpa@gmail.com
-
+See [LICENSE](LICENSE).

@@ -43,7 +43,11 @@ MINER_TYPES = {
     "FPGA": {"price": 50000, "output_btc_per_hour": 0.0005},
     "Quantum": {"price": 500000, "output_btc_per_hour": 0.005}
 }
-MINER_INVENTORY_FILE = "miner_inventory.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+
+MINER_INVENTORY_FILE = os.path.join(DATA_DIR, "miner_inventory.json")
 
 def is_ceasefire_active():
     """بررسی فعال بودن آتش‌بس"""
@@ -124,9 +128,9 @@ MAX_DEFENSE_USES = 1
 MAX_DEFENSE_COUNT = 1 
 
 
-DB_FILE = "bashar.db"
-INVENTORY_FILE = "missile_inventory.json"
-DEFENSE_INVENTORY_FILE = "defense_inventory.json"
+DB_FILE = os.path.join(DATA_DIR, "bashar.db")
+INVENTORY_FILE = os.path.join(DATA_DIR, "missile_inventory.json")
+DEFENSE_INVENTORY_FILE = os.path.join(DATA_DIR, "defense_inventory.json")
 
 missile_inventory = {}
 defense_inventory = {}
