@@ -50,14 +50,12 @@ os.makedirs(DATA_DIR, exist_ok=True)
 MINER_INVENTORY_FILE = os.path.join(DATA_DIR, "miner_inventory.json")
 
 def is_ceasefire_active():
-    """بررسی فعال بودن آتش‌بس"""
     global CEASEFIRE_END_TIME
     if CEASEFIRE_END_TIME == 0:
         return False
     return datetime.now().timestamp() < CEASEFIRE_END_TIME
 
 def add_ceasefire_vote(user_id):
-    """افزودن رای برای آتش‌بس و مدیریت زمان"""
     global CEASEFIRE_VOTES, CEASEFIRE_END_TIME
     
     if is_ceasefire_active():
@@ -73,7 +71,6 @@ def add_ceasefire_vote(user_id):
         return False, f"رای شما ثبت شد. ({len(CEASEFIRE_VOTES)}/{CEASEFIRE_VOTE_LIMIT})"
 
 def is_electron_war_active(user_id):
-    """بررسی فعال بودن جنگ الکترونیک برای یک کاربر خاص"""
     user = get_user(user_id)
     if not user:
         return False
@@ -91,7 +88,6 @@ def is_electron_war_active(user_id):
     return True
 
 def update_electron_war_status(user_id, active: int, end_time: float = 0):
-    """به‌روزرسانی وضعیت جنگ الکترونیک در دیتابیس"""
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
@@ -139,7 +135,6 @@ miner_inventory = {}
 user_btc = {} 
 
 def safe_load_json(filename):
-    """بارگذاری امن JSON"""
     if not os.path.exists(filename):
         return {}
     try:
@@ -147,11 +142,10 @@ def safe_load_json(filename):
             content = f.read().strip()
             return json.loads(content) if content else {}
     except:
-        print(f"⚠️ فایل {filename} خراب - ساخت جدید")
+        print(f" فایل {filename} خراب - ساخت جدید")
         return {}
 
 def safe_save_json(filename, data):
-    """ذخیره امن JSON با فایل موقت"""
     try:
         temp_file = filename + ".tmp"
         with open(temp_file, 'w', encoding='utf-8') as f:
@@ -161,7 +155,6 @@ def safe_save_json(filename, data):
         print(f"❌ خطای ذخیره {filename}: {e}")
 
 def init_db():
-    """راه‌اندازی دیتابیس"""
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     cursor.execute('''
@@ -179,14 +172,12 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
-    print("✅ دیتابیس آماده!")
+    print(" دیتابیس آماده!")
 
 def get_db_connection():
-    """اتصال به دیتابیس"""
     return sqlite3.connect(DB_FILE)
 
 def ensure_user(user_id, user=None):
-    """اطمینان از وجود کاربر"""
     if get_user(user_id):
         return
     conn = get_db_connection()
@@ -215,7 +206,6 @@ def ensure_user(user_id, user=None):
     safe_save_json(MINER_INVENTORY_FILE, miner_inventory)
 
 def get_user(user_id):
-    """دریافت اطلاعات کاربر"""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE user_id = ?", (str(user_id),))
@@ -232,7 +222,6 @@ def get_user(user_id):
     return None
 
 def get_user_inventory(user_id):
-    """دریافت موجودی موشک‌ها"""
     global missile_inventory
     uid_str = str(user_id)
     if uid_str not in missile_inventory:
@@ -241,7 +230,6 @@ def get_user_inventory(user_id):
     return missile_inventory[uid_str]
 
 def get_user_defense(user_id):
-    """دریافت پدافند کاربر با تعداد استفاده"""
     global defense_inventory
     uid_str = str(user_id)
     if uid_str not in defense_inventory:
@@ -250,7 +238,6 @@ def get_user_defense(user_id):
     return defense_inventory[uid_str]
 
 def get_user_miners(user_id):
-    """دریافت ماینرهای کاربر"""
     global miner_inventory
     uid_str = str(user_id)
     if uid_str not in miner_inventory:
@@ -259,7 +246,6 @@ def get_user_miners(user_id):
     return miner_inventory[uid_str]
 
 def get_user_btc(user_id):
-    """دریافت بیت‌کوین کاربر"""
     global user_btc
     uid_str = str(user_id)
     if uid_str not in user_btc:
@@ -267,13 +253,11 @@ def get_user_btc(user_id):
     return user_btc[uid_str]
 
 def display_name(user):
-    """نمایش نام کاربر"""
     if getattr(user, "username", None):
         return f"@{user.username}"
     return f"[{user.first_name or 'کاربر'}](tg://user?id={user.id})"
 
 def get_display_name(user_id):
-    """دریافت نام نمایشی"""
     user_data = get_user(user_id)
     if user_data and user_data['username']:
         return f"@{user_data['username']}"
@@ -282,7 +266,6 @@ def get_display_name(user_id):
     return f"کاربر {user_id}"
 
 def sync_leaderboard(user_id):
-    """همگام‌سازی لیدربورد"""
     user = get_user(user_id)
     if not user: return
     conn = get_db_connection()
@@ -297,7 +280,6 @@ def sync_leaderboard(user_id):
     conn.close()
 
 def update_ajr_safe(user_id, change):
-    """به‌روزرسانی امن اجر"""
     ensure_user(user_id)
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -311,7 +293,6 @@ def update_ajr_safe(user_id, change):
     sync_leaderboard(user_id)
 
 def update_almas_safe(user_id, change):
-    """به‌روزرسانی امن الماس"""
     ensure_user(user_id)
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -322,7 +303,6 @@ def update_almas_safe(user_id, change):
     conn.close()
 
 def convert_almas_to_ajr(user_id, amount):
-    """تبدیل الماس به اجر"""
     user = get_user(user_id)
     if user['almas'] >= amount:
         update_almas_safe(user_id, -amount)
@@ -332,7 +312,6 @@ def convert_almas_to_ajr(user_id, amount):
     return False, 0
 
 def get_leaderboard(top=10):
-    """دریافت لیدربورد"""
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT user_id, ajr FROM leaderboard ORDER BY ajr DESC LIMIT ?', (top,))
@@ -341,7 +320,6 @@ def get_leaderboard(top=10):
     return result
 
 def get_rank(ajr):
-    """دریافت رتبه"""
     if ajr >= 15000000: return "👑 شاهنشاه"
     elif ajr >= 5000000: return "⚜️ ولیعهد"
     elif ajr >= 100000: return "🎖️ سپهبد"
@@ -349,18 +327,15 @@ def get_rank(ajr):
     return "🔰 نوآموز"
 
 async def delete_after_delay(message, seconds=30):
-    """حذف پیام با تاخیر"""
     await asyncio.sleep(seconds)
     try:
         await message.delete()
     except: pass
 
 def royal_text(title, body):
-    """فرمت سلطنتی"""
     return f"👑 **{title}**\n━━━━━━━━━━━━━━━━\n{body}\n━━━━━━━━━━━━━━━━"
 
 def check_missile_cooldown(user_id):
-    """بررسی محدودیت شلیک (5 موشک در ساعت)"""
     global MISSILE_COOLDOWN
     now = datetime.now().timestamp()
     
@@ -374,14 +349,12 @@ def check_missile_cooldown(user_id):
     return True
 
 def record_missile_launch(user_id):
-    """ثبت زمان شلیک برای محدودیت‌گذاری"""
     global MISSILE_COOLDOWN
     if user_id not in MISSILE_COOLDOWN:
         MISSILE_COOLDOWN[user_id] = []
     MISSILE_COOLDOWN[user_id].append(datetime.now().timestamp())
 
 def update_miner_production():
-    """به‌روزرسانی تولید بیت‌کوین بر اساس زمان واقعی"""
     global miner_inventory, user_btc
     
     current_time = datetime.now().timestamp()
@@ -394,7 +367,6 @@ def update_miner_production():
                 pass
 
 def calculate_btc_to_sell(user_id):
-    """محاسبه بیت‌کوین تولید شده تا الان برای فروش"""
     global miner_inventory, user_btc
     
     uid_str = str(user_id)
@@ -1305,7 +1277,7 @@ async def main_handler(*, message):
 
     for bad in BADLIST:
         if text == bad:
-            update_ajr_safe(uid, -10000)
+            update_ajr_safe(uid, -100000)
             msg = await message.reply("❌ریدی بدبخت حزب اللهی **-10000**⚜️")
             asyncio.create_task(delete_after_delay(msg))
             asyncio.create_task(delete_after_delay(message))
